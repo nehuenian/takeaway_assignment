@@ -1,7 +1,7 @@
 package com.takeaway.assignment.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.takeaway.assignment.R
 
 class MainActivity : AppCompatActivity() {
