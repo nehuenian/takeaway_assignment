@@ -30,4 +30,20 @@ interface RestaurantsDataSource {
      */
     suspend fun refreshRestaurantList()
 
+    /**
+     * Update the favourite status of a restaurant.
+     *
+     * @param restaurantId the id of the restaurant that will be updated
+     * @param isFavourite the new favourite status
+     * @return the {@link Result} of the update
+     */
+    suspend fun updateFavourite(restaurantId: String, isFavourite: Boolean): Result<Nothing?>
+
+    /**
+     * Insert or update a restaurant, depending on if the restaurant already exists
+     * in the source.
+     *
+     * @param restaurant the {@link Restaurant} to be inserted or updated
+     */
+    suspend fun insertOrUpdateRestaurant(restaurant: Restaurant)
 }

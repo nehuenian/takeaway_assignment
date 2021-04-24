@@ -1,7 +1,9 @@
 package com.takeaway.assignment.data.sources.remote
 
 import android.accounts.NetworkErrorException
+import android.annotation.SuppressLint
 import android.content.Context
+import android.database.sqlite.SQLiteCantOpenDatabaseException
 import androidx.annotation.RawRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -49,8 +51,24 @@ class RestaurantsRemoteDataSource @Inject constructor(context: Context) : Restau
         } ?: Success(listOf())
     }
 
+    @SuppressLint("NullSafeMutableLiveData")
     override suspend fun refreshRestaurantList() {
         _observableRestaurantList.value = getRestaurantList()
+    }
+
+    override suspend fun updateFavourite(
+        restaurantId: String,
+        isFavourite: Boolean
+    ): Result<Nothing?> {
+        return if (shouldFail) {
+            Error(SQLiteCantOpenDatabaseException("Cant open the database"))
+        } else {
+            Success(null)
+        }
+    }
+
+    override suspend fun insertOrUpdateRestaurant(restaurant: Restaurant) {
+        // no-op
     }
 }
 

@@ -25,4 +25,15 @@ class RestaurantsRemoteDataSource @Inject constructor(
     override suspend fun refreshRestaurantList() {
         TODO("Missing APIs from BE team")
     }
+
+    override suspend fun updateFavourite(
+        restaurantId: String,
+        isFavourite: Boolean
+    ): Result<Nothing?> {
+        TODO("Missing APIs from BE team")
+    }
+
+    override suspend fun insertOrUpdateRestaurant(restaurant: Restaurant) {
+        // no-op
+    }
 }
