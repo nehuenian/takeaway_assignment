@@ -5,5 +5,11 @@ import com.takeaway.assignment.data.Restaurant
 import com.takeaway.assignment.data.Result
 
 interface RestaurantsRepository {
-    fun observeRestaurants(): LiveData<Result<List<Restaurant>>>
+
+    fun observeRestaurantList(): LiveData<Result<List<Restaurant>>>
+
+    suspend fun refreshRestaurantList(): Result<Nothing?>
+
+    suspend fun updateFavourite(restaurant: Restaurant): Result<Nothing?>
+
 }

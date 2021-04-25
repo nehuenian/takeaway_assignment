@@ -36,7 +36,7 @@ data class Restaurant @JvmOverloads constructor(
     val status: Status,
 
     @field:ColumnInfo(name = COLUMN_FAVOURITE)
-    val isFavourite: Boolean = false,
+    var isFavourite: Boolean = false,
 
     @field:SerializedName(SORTING_VALUES)
     @field:Embedded(prefix = SORTING_VALUES_PREFIX)
