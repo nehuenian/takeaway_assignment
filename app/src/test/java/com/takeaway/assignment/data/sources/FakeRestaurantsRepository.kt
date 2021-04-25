@@ -1,33 +1,27 @@
 package com.takeaway.assignment.data.sources
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
-import com.takeaway.assignment.R
 import com.takeaway.assignment.data.Restaurant
 import com.takeaway.assignment.data.Result
-import com.takeaway.assignment.util.READER_CHARSET
-import com.takeaway.assignment.util.fromJson
-import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
 
-class FakeRestaurantsRepository @Inject constructor(context: Context) : RestaurantsRepository {
+class FakeRestaurantsRepository() : RestaurantsRepository {
 
-    private var _shouldReturnError = false
-    val restaurantsList: List<Restaurant>? =
-        Gson().fromJson<List<Restaurant>>(context, R.raw.sample_restaurant_list, READER_CHARSET)
+    var shouldReturnError = false
+    var restaurantsList: ArrayList<Restaurant> = ArrayList()
 
     private val _observableRestaurantList = MutableLiveData<Result<List<Restaurant>>>()
 
-    override fun observeRestaurantList(): LiveData<Result<List<Restaurant>>> =
-        _observableRestaurantList
-
-    fun setReturnError(value: Boolean) {
-        _shouldReturnError = value
+    override fun observeRestaurantList(): LiveData<Result<List<Restaurant>>> {
+        runBlocking { refreshRestaurantList() }
+        return _observableRestaurantList
     }
 
+
     override suspend fun refreshRestaurantList(): Result<Nothing?> {
-        return if (_shouldReturnError || restaurantsList == null) {
+        return if (shouldReturnError) {
+            _observableRestaurantList.value = Result.Error(java.lang.IllegalArgumentException())
             Result.Error(java.lang.IllegalArgumentException())
         } else {
             _observableRestaurantList.value = Result.Success(restaurantsList)
@@ -36,9 +30,11 @@ class FakeRestaurantsRepository @Inject constructor(context: Context) : Restaura
     }
 
     override suspend fun updateFavourite(restaurant: Restaurant): Result<Nothing?> {
-        restaurantsList?.forEach { restaurantEntity ->
-            if (restaurant.name == restaurantEntity.name) {
-                restaurantEntity.isFavourite = restaurant.isFavourite
+        if (shouldReturnError.not()) {
+            restaurantsList.forEach { restaurantEntity ->
+                if (restaurant.name == restaurantEntity.name) {
+                    restaurantEntity.isFavourite = restaurant.isFavourite
+                }
             }
         }
         return refreshRestaurantList()

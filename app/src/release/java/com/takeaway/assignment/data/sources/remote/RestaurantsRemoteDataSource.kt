@@ -27,7 +27,7 @@ class RestaurantsRemoteDataSource @Inject constructor(
     }
 
     override suspend fun updateFavourite(
-        restaurantId: String,
+        restaurantName: String,
         isFavourite: Boolean
     ): Result<Nothing?> {
         TODO("Missing APIs from BE team")

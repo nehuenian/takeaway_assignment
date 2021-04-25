@@ -4,7 +4,6 @@ package com.takeaway.assignment.data.sources.local
 object RestaurantTableStructure {
     const val TABLE_NAME = "restaurants"
 
-    const val COLUMN_ID = "id"
     const val COLUMN_NAME = "name"
     const val COLUMN_STATUS = "status"
     const val COLUMN_FAVOURITE = "favourite"

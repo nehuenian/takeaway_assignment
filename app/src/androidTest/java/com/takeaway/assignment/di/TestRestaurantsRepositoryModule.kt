@@ -1,8 +1,8 @@
 package com.takeaway.assignment.di
 
 import android.content.Context
-import com.takeaway.assignment.data.sources.FakeRestaurantsRepository
 import com.takeaway.assignment.data.sources.RestaurantsRepository
+import com.takeaway.assignment.data.sources.TestRestaurantsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -19,6 +19,6 @@ object TestRestaurantsRepositoryModule {
     @Singleton
     @Provides
     fun provideRepository(@ApplicationContext context: Context): RestaurantsRepository {
-        return FakeRestaurantsRepository(context)
+        return TestRestaurantsRepository(context)
     }
 }
