@@ -2,7 +2,9 @@ package com.takeaway.assignment.di
 
 import android.content.Context
 import androidx.room.Room
+import com.takeaway.assignment.data.sources.MainRestaurantsRepository
 import com.takeaway.assignment.data.sources.RestaurantsDataSource
+import com.takeaway.assignment.data.sources.RestaurantsRepository
 import com.takeaway.assignment.data.sources.local.AssignmentDb
 import com.takeaway.assignment.data.sources.local.RestaurantsLocalDataSource
 import com.takeaway.assignment.data.sources.remote.RestaurantsRemoteDataSource
@@ -30,7 +32,7 @@ object AppModule {
     @Singleton
     @RemoteRestaurantsDataSource
     @Provides
-    fun provideRestaurantsRemoteDataSource(context: Context): RestaurantsDataSource {
+    fun provideRestaurantsRemoteDataSource(@ApplicationContext context: Context): RestaurantsDataSource {
         return RestaurantsRemoteDataSource(context)
     }
 
@@ -59,4 +61,23 @@ object AppModule {
     @Singleton
     @Provides
     fun provideIoDispatcher() = Dispatchers.IO
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object RestaurantsRepositoryModule {
+
+    @Singleton
+    @Provides
+    fun provideRestaurantsRepository(
+        @AppModule.RemoteRestaurantsDataSource remoteRestaurantsDataSource: RestaurantsDataSource,
+        @AppModule.LocalRestaurantsDataSource localRestaurantsDataSource: RestaurantsDataSource,
+        ioDispatcher: CoroutineDispatcher
+    ): RestaurantsRepository {
+        return MainRestaurantsRepository(
+            remoteRestaurantsDataSource,
+            localRestaurantsDataSource,
+            ioDispatcher
+        )
+    }
 }

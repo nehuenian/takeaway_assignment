@@ -3,22 +3,18 @@ package com.takeaway.assignment.data.sources.remote
 import android.accounts.NetworkErrorException
 import android.annotation.SuppressLint
 import android.content.Context
-import android.database.sqlite.SQLiteCantOpenDatabaseException
-import androidx.annotation.RawRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.takeaway.assignment.R
 import com.takeaway.assignment.data.Restaurant
 import com.takeaway.assignment.data.Result
 import com.takeaway.assignment.data.Result.Error
 import com.takeaway.assignment.data.Result.Success
 import com.takeaway.assignment.data.sources.RestaurantsDataSource
+import com.takeaway.assignment.util.READER_CHARSET
+import com.takeaway.assignment.util.fromJson
 import kotlinx.coroutines.delay
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.Reader
 import javax.inject.Inject
 
 /**
@@ -29,7 +25,6 @@ import javax.inject.Inject
 class RestaurantsRemoteDataSource @Inject constructor(context: Context) : RestaurantsDataSource {
     companion object {
         private const val SERVICE_FAKED_LATENCY_IN_MILLIS = 3000L
-        private const val READER_CHARSET = "UTF-8"
     }
 
     // Use this variable to test the error test case
@@ -60,21 +55,11 @@ class RestaurantsRemoteDataSource @Inject constructor(context: Context) : Restau
         restaurantId: String,
         isFavourite: Boolean
     ): Result<Nothing?> {
-        return if (shouldFail) {
-            Error(SQLiteCantOpenDatabaseException("Cant open the database"))
-        } else {
-            Success(null)
-        }
+        // no-op
+        return Success(null)
     }
 
     override suspend fun insertOrUpdateRestaurant(restaurant: Restaurant) {
         // no-op
     }
-}
-
-inline fun <reified T> Gson.fromJson(context: Context, @RawRes jsonId: Int, charset: String): T? {
-    val inputStream = context.resources.openRawResource(jsonId)
-    val reader: Reader = BufferedReader(InputStreamReader(inputStream, charset))
-
-    return fromJson<T>(reader, object : TypeToken<T>() {}.type)
 }
