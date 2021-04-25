@@ -38,12 +38,12 @@ class RestaurantsLocalDataSource internal constructor(
     }
 
     override suspend fun updateFavourite(
-        restaurantId: String,
+        restaurantName: String,
         isFavourite: Boolean
     ): Result<Nothing?> {
         return withContext(ioDispatcher) {
             return@withContext try {
-                restaurantsDao.updateFavourite(restaurantId, isFavourite)
+                restaurantsDao.updateFavourite(restaurantName, isFavourite)
                 Result.Success(null)
             } catch (exception: SQLiteException) {
                 Result.Error(exception)

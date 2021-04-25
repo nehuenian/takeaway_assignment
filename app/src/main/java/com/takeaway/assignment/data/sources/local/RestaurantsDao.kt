@@ -28,11 +28,11 @@ interface RestaurantsDao {
     /**
      * Update the favourite status of a restaurant (used for sorting purposes)
      *
-     * @param restaurantId id of the restaurant
+     * @param restaurantName name of the restaurant
      * @param isFavourite status to be updated
      */
-    @Query("UPDATE restaurants SET favourite = :isFavourite WHERE id = :restaurantId")
-    suspend fun updateFavourite(restaurantId: String, isFavourite: Boolean)
+    @Query("UPDATE restaurants SET favourite = :isFavourite WHERE name = :restaurantName")
+    suspend fun updateFavourite(restaurantName: String, isFavourite: Boolean)
 
     @Transaction
     suspend fun insertOrUpdate(restaurant: Restaurant) {

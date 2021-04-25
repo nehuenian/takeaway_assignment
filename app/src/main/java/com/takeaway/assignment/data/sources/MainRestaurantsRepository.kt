@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 class MainRestaurantsRepository(
     private val restaurantsRemoteDataSource: RestaurantsDataSource,
     private val restaurantsLocalDataSource: RestaurantsDataSource,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : RestaurantsRepository {
 
     private val tag = this.javaClass.canonicalName
@@ -27,7 +27,7 @@ class MainRestaurantsRepository(
     override suspend fun updateFavourite(restaurant: Restaurant): Result<Nothing?> {
         return withContext(ioDispatcher) {
             restaurantsLocalDataSource.updateFavourite(
-                restaurant.id,
+                restaurant.name,
                 restaurant.isFavourite
             )
         }

@@ -11,7 +11,7 @@ interface RestaurantsDataSource {
 
     /**
      * Gets the live data in which will be published all the changes on the restaurant list.
-     * This is done through a {@link Response} that wraps the different
+     * This is done through a [Result] that wraps the different
      * possible states of the response.
      *
      * @return the observable that will receive the restaurant list updates
@@ -21,7 +21,7 @@ interface RestaurantsDataSource {
     /**
      * Gets the result of the request to get the restaurant list.
      *
-     * @return the {@link RequestResult} related to the request for the restaurant list
+     * @return the [Result] related to the request for the restaurant list
      */
     suspend fun getRestaurantList(): Result<List<Restaurant>>
 
@@ -33,17 +33,17 @@ interface RestaurantsDataSource {
     /**
      * Update the favourite status of a restaurant.
      *
-     * @param restaurantId the id of the restaurant that will be updated
+     * @param restaurantName the name of the restaurant that will be updated
      * @param isFavourite the new favourite status
-     * @return the {@link Result} of the update
+     * @return the [Result] of the update
      */
-    suspend fun updateFavourite(restaurantId: String, isFavourite: Boolean): Result<Nothing?>
+    suspend fun updateFavourite(restaurantName: String, isFavourite: Boolean): Result<Nothing?>
 
     /**
      * Insert or update a restaurant, depending on if the restaurant already exists
      * in the source.
      *
-     * @param restaurant the {@link Restaurant} to be inserted or updated
+     * @param restaurant the [Restaurant] to be inserted or updated
      */
     suspend fun insertOrUpdateRestaurant(restaurant: Restaurant)
 }

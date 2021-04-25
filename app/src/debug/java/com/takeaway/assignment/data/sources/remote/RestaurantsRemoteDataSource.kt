@@ -52,7 +52,7 @@ class RestaurantsRemoteDataSource @Inject constructor(context: Context) : Restau
     }
 
     override suspend fun updateFavourite(
-        restaurantId: String,
+        restaurantName: String,
         isFavourite: Boolean
     ): Result<Nothing?> {
         // no-op

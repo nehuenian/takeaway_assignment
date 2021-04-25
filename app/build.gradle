@@ -72,6 +72,9 @@ dependencies {
 
     // Unit Testing
     testImplementation "junit:junit:$junitVersion"
+    testImplementation "io.mockk:mockk:$testMockkVersion"
+    testImplementation "androidx.arch.core:core-testing:$archTestingVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
 
     // UI Testing
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
