@@ -37,7 +37,9 @@ class MainRestaurantsRepository(
         return restaurantsRemoteDataSource.getRestaurantList().let { result ->
             when (result) {
                 is Result.Success -> {
-                    repeat(result.data.size) { restaurantsLocalDataSource::insertOrUpdateRestaurant }
+                    result.data.forEach { restaurant ->
+                        restaurantsLocalDataSource.insertOrUpdateRestaurant(restaurant)
+                    }
                     Result.Success(null)
                 }
                 is Result.Error -> {

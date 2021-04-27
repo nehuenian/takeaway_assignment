@@ -2,10 +2,7 @@ package com.takeaway.assignment.usecases
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
-import com.takeaway.assignment.data.Restaurant
-import com.takeaway.assignment.data.Result
-import com.takeaway.assignment.data.SortCondition
-import com.takeaway.assignment.data.SortOrder
+import com.takeaway.assignment.data.*
 import com.takeaway.assignment.data.sources.RestaurantsRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -17,32 +14,32 @@ class ObserveRestaurantListUseCase @Inject constructor(
     private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
     suspend operator fun invoke(
-        searchText: String = "",
-        sortCondition: SortCondition = SortCondition.DISTANCE,
-        sortOrder: SortOrder = SortOrder.ASCENDING,
+        filteringSortingCondition: RestaurantFilteringSortingCondition,
     ): LiveData<Result<List<Restaurant>>> = withContext(dispatcher) {
         restaurantsRepository.observeRestaurantList().map { result ->
             if (result is Result.Success) {
-                var finalRestaurantList = result.data
-                    .filter { restaurant ->
-                        restaurant.name.contains(searchText, true)
+                with(filteringSortingCondition) {
+                    var finalRestaurantList = result.data
+                        .filter { restaurant ->
+                            restaurant.name.contains(searchFilter, true)
+                        }
+
+                    finalRestaurantList = when (sortOrder) {
+                        SortOrder.ASCENDING -> {
+                            finalRestaurantList.sortByAscendingCondition(sortCondition)
+                        }
+                        SortOrder.DESCENDING -> {
+                            finalRestaurantList.sortByDescendingCondition(sortCondition)
+                        }
                     }
 
-                finalRestaurantList = when (sortOrder) {
-                    SortOrder.ASCENDING -> {
-                        finalRestaurantList.sortByAscendingCondition(sortCondition)
-                    }
-                    SortOrder.DESCENDING -> {
-                        finalRestaurantList.sortByDescendingCondition(sortCondition)
-                    }
+                    finalRestaurantList =
+                        finalRestaurantList
+                            .sortedByDescending { it.status.weight }
+                            .sortedByDescending { it.isFavourite }
+
+                    Result.Success(finalRestaurantList)
                 }
-
-                finalRestaurantList =
-                    finalRestaurantList
-                        .sortedByDescending { it.status.weight }
-                        .sortedByDescending { it.isFavourite }
-
-                Result.Success(finalRestaurantList)
             } else {
                 result
             }

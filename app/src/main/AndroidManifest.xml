@@ -3,14 +3,15 @@
     package="com.takeaway.assignment">
 
     <application
+        android:name=".AssignmentApplication"
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TakeAwayAssignment"
-        android:fullBackupContent="@xml/backup_descriptor">
-        <activity android:name=".ui.MainActivity">
+        android:theme="@style/Theme.TakeAwayAssignment">
+        <activity android:name=".ui.RestaurantsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
