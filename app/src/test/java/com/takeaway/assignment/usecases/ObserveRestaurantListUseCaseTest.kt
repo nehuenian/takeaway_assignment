@@ -1,10 +1,7 @@
 package com.takeaway.assignment.usecases
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.takeaway.assignment.data.Restaurant
-import com.takeaway.assignment.data.Result
-import com.takeaway.assignment.data.SortCondition
-import com.takeaway.assignment.data.SortOrder
+import com.takeaway.assignment.data.*
 import com.takeaway.assignment.data.sources.FakeRestaurantsRepository
 import com.takeaway.assignment.testutil.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,9 +24,10 @@ class ObserveRestaurantListUseCaseTest {
     @Test
     fun `Test load restaurant list without restaurants in it`() = runBlockingTest {
         // Given an empty repository
+        val filteringSortingCondition = RestaurantFilteringSortingCondition()
 
         // When calling the use case without name filtering nor custom sorting condition
-        val result = observeRestaurantListUseCase.invoke().getOrAwaitValue()
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is success with empty data in it
         assert(result is Result.Success)
@@ -41,9 +39,10 @@ class ObserveRestaurantListUseCaseTest {
         runBlockingTest {
             // Given a repository with 3 restaurants not marked as favourites
             restaurantsRepository.restaurantsList = generateThreeRestaurantsWithNoFavourites()
+            val filteringSortingCondition = RestaurantFilteringSortingCondition()
 
             // When calling the use case without name filtering nor custom sorting condition
-            val result = observeRestaurantListUseCase.invoke().getOrAwaitValue()
+            val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
             // Then the result is success with three restaurants showing in the original order
             assert(result is Result.Success)
@@ -60,10 +59,12 @@ class ObserveRestaurantListUseCaseTest {
         runBlockingTest {
             // Given a repository with 3 restaurants not marked as favourites one which does not include the suffix filtered by
             restaurantsRepository.restaurantsList = generateThreeRestaurantsWithNoFavourites()
+            val filteringSortingCondition = RestaurantFilteringSortingCondition(
+                searchFilter = RESTAURANT_SUFFIX_FILTER
+            )
 
             // When calling the use case with name suffix filtering and no custom sorting condition
-            val result =
-                observeRestaurantListUseCase.invoke(RESTAURANT_SUFFIX_FILTER).getOrAwaitValue()
+            val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
             // Then the result is success with the two restaurants with the filtered suffix
             assert(result is Result.Success)
@@ -79,10 +80,12 @@ class ObserveRestaurantListUseCaseTest {
         runBlockingTest {
             // Given a repository with 3 restaurants not marked as favourites one which will match the prefix filter
             restaurantsRepository.restaurantsList = generateThreeRestaurantsWithNoFavourites()
+            val filteringSortingCondition = RestaurantFilteringSortingCondition(
+                searchFilter = RESTAURANT_PREFIX_FILTER
+            )
 
             // When calling the use case with name suffix filtering and no custom sorting condition
-            val result =
-                observeRestaurantListUseCase.invoke(RESTAURANT_PREFIX_FILTER).getOrAwaitValue()
+            val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
             // Then the result is success with the unique restaurant matching the prefix filter
             assert(result is Result.Success)
@@ -96,9 +99,10 @@ class ObserveRestaurantListUseCaseTest {
     fun `Test load restaurant list sorted by favourite status`() = runBlockingTest {
         // Given a repository with 3 restaurants, being the last of those the favourite one
         restaurantsRepository.restaurantsList = generateThreeRestaurantsWithLastOneFavourite()
+        val filteringSortingCondition = RestaurantFilteringSortingCondition()
 
         // When calling the use case with no filtering and no custom sorting condition
-        val result = observeRestaurantListUseCase.invoke().getOrAwaitValue()
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is success with the last restaurant in the original order being the first one
         assert(result is Result.Success)
@@ -114,9 +118,10 @@ class ObserveRestaurantListUseCaseTest {
     fun `Test load restaurant list sorted by restaurant status`() = runBlockingTest {
         // Given a repository with 3 restaurants all with wrong initial order regarding their status
         restaurantsRepository.restaurantsList = generateThreeRestaurantsWithUnorderedStatus()
+        val filteringSortingCondition = RestaurantFilteringSortingCondition()
 
         // When calling the use case with no filtering and no custom sorting condition
-        val result = observeRestaurantListUseCase.invoke().getOrAwaitValue()
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is success with the restaurants ordered as follow: open -> order ahead -> closed
         assert(result is Result.Success)
@@ -134,9 +139,10 @@ class ObserveRestaurantListUseCaseTest {
         // and the only favourite being the closed one
         restaurantsRepository.restaurantsList =
             generateThreeRestaurantsWithUnorderedStatusAndOneFavourite()
+        val filteringSortingCondition = RestaurantFilteringSortingCondition()
 
         // When calling the use case with no filtering and no custom sorting condition
-        val result = observeRestaurantListUseCase.invoke().getOrAwaitValue()
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is success with the restaurants ordered as follow:
         // closed-favourite -> open -> order ahead
@@ -153,12 +159,13 @@ class ObserveRestaurantListUseCaseTest {
     fun `Test load restaurant list sorted by descending best match value`() = runBlockingTest {
         // Given a repository with 4 restaurants, being the last one the one with best sorting value
         setUpInitialRestaurantsPlusRestaurantWithBestDescendingValues()
-
-        // When calling the use case with no filtering and descending best match value sorting condition
-        val result = observeRestaurantListUseCase.invoke(
+        val filteringSortingCondition = RestaurantFilteringSortingCondition(
             sortCondition = SortCondition.BEST_MATCH,
             sortOrder = SortOrder.DESCENDING
-        ).getOrAwaitValue()
+        )
+
+        // When calling the use case with no filtering and descending best match value sorting condition
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is success with the restaurant with the greatest best match value
         // showing first, and the other restaurants in the list in the original order
@@ -169,12 +176,13 @@ class ObserveRestaurantListUseCaseTest {
     fun `Test load restaurant list sorted by ascending newest value`() = runBlockingTest {
         // Given a repository with 4 restaurants, being the last one the one with lowest newest value
         setUpInitialRestaurantsPlusRestaurantWithBestAscendingValues()
-
-        // When calling the use case with no filtering and ascending newest value sorting condition
-        val result = observeRestaurantListUseCase.invoke(
+        val filteringSortingCondition = RestaurantFilteringSortingCondition(
             sortCondition = SortCondition.NEWEST,
             sortOrder = SortOrder.ASCENDING
-        ).getOrAwaitValue()
+        )
+
+        // When calling the use case with no filtering and ascending newest value sorting condition
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is success with the restaurant with the lowest newest value
         // showing first, and the other restaurants in the list in the original order
@@ -185,12 +193,13 @@ class ObserveRestaurantListUseCaseTest {
     fun `Test load restaurant list sorted by descending newest value`() = runBlockingTest {
         // Given a repository with 4 restaurants, being the last one the one with highest newest value
         setUpInitialRestaurantsPlusRestaurantWithBestDescendingValues()
-
-        // When calling the use case with no filtering and descending newest value sorting condition
-        val result = observeRestaurantListUseCase.invoke(
+        val filteringSortingCondition = RestaurantFilteringSortingCondition(
             sortCondition = SortCondition.NEWEST,
             sortOrder = SortOrder.DESCENDING
-        ).getOrAwaitValue()
+        )
+
+        // When calling the use case with no filtering and descending newest value sorting condition
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is success with the restaurant with the biggest newest value
         // showing first, and the other restaurants in the list in the original order
@@ -201,12 +210,13 @@ class ObserveRestaurantListUseCaseTest {
     fun `Test load restaurant list sorted by descending rating average`() = runBlockingTest {
         // Given a repository with 4 restaurants, being the last one the one with highest rating average
         setUpInitialRestaurantsPlusRestaurantWithBestDescendingValues()
-
-        // When calling the use case with no filtering and descending rating average sorting condition
-        val result = observeRestaurantListUseCase.invoke(
+        val filteringSortingCondition = RestaurantFilteringSortingCondition(
             sortCondition = SortCondition.RATING_AVERAGE,
             sortOrder = SortOrder.DESCENDING
-        ).getOrAwaitValue()
+        )
+
+        // When calling the use case with no filtering and descending rating average sorting condition
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is success with the restaurant with the biggest rating average
         // showing first, and the other restaurants in the list in the original order
@@ -217,12 +227,13 @@ class ObserveRestaurantListUseCaseTest {
     fun `Test load restaurant list sorted by ascending distance`() = runBlockingTest {
         // Given a repository with 4 restaurants, being the last one the one with the lowest distance
         setUpInitialRestaurantsPlusRestaurantWithBestAscendingValues()
-
-        // When calling the use case with no filtering and ascending distance sorting condition
-        val result = observeRestaurantListUseCase.invoke(
+        val filteringSortingCondition = RestaurantFilteringSortingCondition(
             sortCondition = SortCondition.DISTANCE,
             sortOrder = SortOrder.ASCENDING
-        ).getOrAwaitValue()
+        )
+
+        // When calling the use case with no filtering and ascending distance sorting condition
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is success with the restaurant with the biggest rating average
         // showing first, and the other restaurants in the list in the original order
@@ -233,12 +244,13 @@ class ObserveRestaurantListUseCaseTest {
     fun `Test load restaurant list sorted by descending popularity`() = runBlockingTest {
         // Given a repository with 4 restaurants, being the last one the one with highest popularity
         setUpInitialRestaurantsPlusRestaurantWithBestDescendingValues()
-
-        // When calling the use case with no filtering and descending popularity sorting condition
-        val result = observeRestaurantListUseCase.invoke(
+        val filteringSortingCondition = RestaurantFilteringSortingCondition(
             sortCondition = SortCondition.POPULARITY,
             sortOrder = SortOrder.DESCENDING
-        ).getOrAwaitValue()
+        )
+
+        // When calling the use case with no filtering and descending popularity sorting condition
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is success with the restaurant with the biggest popularity
         // showing first, and the other restaurants in the list in the original order
@@ -249,12 +261,13 @@ class ObserveRestaurantListUseCaseTest {
     fun `Test load restaurant list sorted by descending average price`() = runBlockingTest {
         // Given a repository with 4 restaurants, being the last one the one with highest average price
         setUpInitialRestaurantsPlusRestaurantWithBestDescendingValues()
-
-        // When calling the use case with no filtering and descending average price sorting condition
-        val result = observeRestaurantListUseCase.invoke(
+        val filteringSortingCondition = RestaurantFilteringSortingCondition(
             sortCondition = SortCondition.AVERAGE_PRODUCT_PRICE,
             sortOrder = SortOrder.DESCENDING
-        ).getOrAwaitValue()
+        )
+
+        // When calling the use case with no filtering and descending average price sorting condition
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is success with the restaurant with the highest average price
         // showing first, and the other restaurants in the list in the original order
@@ -265,12 +278,13 @@ class ObserveRestaurantListUseCaseTest {
     fun `Test load restaurant list sorted by ascending average price`() = runBlockingTest {
         // Given a repository with 4 restaurants, being the last one the one with lowest average price
         setUpInitialRestaurantsPlusRestaurantWithBestAscendingValues()
-
-        // When calling the use case with no filtering and ascending average price sorting condition
-        val result = observeRestaurantListUseCase.invoke(
+        val filteringSortingCondition = RestaurantFilteringSortingCondition(
             sortCondition = SortCondition.AVERAGE_PRODUCT_PRICE,
             sortOrder = SortOrder.ASCENDING
-        ).getOrAwaitValue()
+        )
+
+        // When calling the use case with no filtering and ascending average price sorting condition
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is success with the restaurant with the lowest average price
         // showing first, and the other restaurants in the list in the original order
@@ -281,12 +295,10 @@ class ObserveRestaurantListUseCaseTest {
     fun `Test load restaurant list sorted by ascending delivery cost`() = runBlockingTest {
         // Given a repository with 4 restaurants, being the last one the one with lowest delivery cost
         setUpInitialRestaurantsPlusRestaurantWithBestAscendingValues()
+        val filteringSortingCondition = RestaurantFilteringSortingCondition()
 
         // When calling the use case with no filtering and ascending delivery cost sorting condition
-        val result = observeRestaurantListUseCase.invoke(
-            sortCondition = SortCondition.DELIVERY_COSTS,
-            sortOrder = SortOrder.ASCENDING
-        ).getOrAwaitValue()
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is success with the restaurant with the lowest delivery cost
         // showing first, and the other restaurants in the list in the original order
@@ -297,12 +309,13 @@ class ObserveRestaurantListUseCaseTest {
     fun `Test load restaurant list sorted by ascending min cost`() = runBlockingTest {
         // Given a repository with 4 restaurants, being the last one the one with lowest min cost
         setUpInitialRestaurantsPlusRestaurantWithBestAscendingValues()
-
-        // When calling the use case with no filtering and ascending min cost sorting condition
-        val result = observeRestaurantListUseCase.invoke(
+        val filteringSortingCondition = RestaurantFilteringSortingCondition(
             sortCondition = SortCondition.MIN_COST,
             sortOrder = SortOrder.ASCENDING
-        ).getOrAwaitValue()
+        )
+
+        // When calling the use case with no filtering and ascending min cost sorting condition
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is success with the restaurant with the lowest min cost
         // showing first, and the other restaurants in the list in the original order
@@ -315,13 +328,14 @@ class ObserveRestaurantListUseCaseTest {
             // Given a repository with 10 restaurants all with different favourite and
             // restaurant status, with different sorting values
             restaurantsRepository.restaurantsList = generateMixedRestaurantList()
+            val filteringSortingCondition = RestaurantFilteringSortingCondition(
+                searchFilter = RESTAURANT_SUFFIX_FILTER,
+                sortCondition = SortCondition.DISTANCE,
+                sortOrder = SortOrder.ASCENDING
+            )
 
             // When calling the use case with suffix filtering, and custom sort condition
-            val result = observeRestaurantListUseCase.invoke(
-                RESTAURANT_SUFFIX_FILTER,
-                SortCondition.DISTANCE,
-                SortOrder.ASCENDING
-            ).getOrAwaitValue()
+            val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
             // Then the result is success with 9 restaurants ordered following the criteria
             // below (from the highest to the lowest priority):
@@ -350,9 +364,10 @@ class ObserveRestaurantListUseCaseTest {
     fun `Test load restaurant list with error`() = runBlockingTest {
         // Given a repository that returns error during loading
         restaurantsRepository.shouldReturnError = true
+        val filteringSortingCondition = RestaurantFilteringSortingCondition()
 
         // When calling the use case with no filtering
-        val result = observeRestaurantListUseCase.invoke().getOrAwaitValue()
+        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
 
         // Then the result is error
         assert(result is Result.Error)
