@@ -8,16 +8,54 @@
 
     <com.google.android.material.appbar.MaterialToolbar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/design_default_color_primary">
 
         <SearchView
             android:id="@+id/restaurant_search"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/x_small_spacing"
+            android:background="@drawable/rounded_white_background" />
     </com.google.android.material.appbar.MaterialToolbar>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="48dp"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/small_spacing"
+        android:paddingTop="@dimen/x_small_spacing"
+        android:paddingEnd="@dimen/small_spacing"
+        android:paddingBottom="@dimen/x_small_spacing"
+        tools:ignore="UnusedAttribute">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sort_by"
+            android:textColor="@color/black" />
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/sort_conditions_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_spacing" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
 
     <FrameLayout
         android:id="@+id/restaurant_list_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/cardview_light_background" />
 </LinearLayout>

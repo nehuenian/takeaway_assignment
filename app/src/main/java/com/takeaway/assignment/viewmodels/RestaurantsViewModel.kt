@@ -1,9 +1,7 @@
 package com.takeaway.assignment.viewmodels
 
 import androidx.lifecycle.*
-import com.takeaway.assignment.data.Restaurant
-import com.takeaway.assignment.data.RestaurantFilteringSortingCondition
-import com.takeaway.assignment.data.Result
+import com.takeaway.assignment.data.*
 import com.takeaway.assignment.usecases.ObserveRestaurantListUseCase
 import com.takeaway.assignment.usecases.RefreshRestaurantListUseCase
 import com.takeaway.assignment.usecases.UpdateRestaurantFavouriteStatusUseCase
@@ -38,16 +36,27 @@ class RestaurantsViewModel @Inject constructor(
     private val _updateFavouriteResult = MutableLiveData<Result<Nothing?>>()
     val updateFavouriteResult: LiveData<Result<Nothing?>> = _updateFavouriteResult
 
-    fun setFilterAndSortCondition(restaurantFilteringSortingCondition: RestaurantFilteringSortingCondition) {
-        _searchFilterPlusSortCondition.value = restaurantFilteringSortingCondition
-    }
-
     fun setSearchFilter(searchText: String) {
         _searchFilterPlusSortCondition.value?.let {
             _searchFilterPlusSortCondition.value = it.copy(searchFilter = searchText)
         } ?: run {
             _searchFilterPlusSortCondition.value =
                 RestaurantFilteringSortingCondition(searchFilter = searchText)
+        }
+    }
+
+    fun setSortCondition(sortCondition: SortCondition, sortOrder: SortOrder) {
+        _searchFilterPlusSortCondition.value?.let {
+            _searchFilterPlusSortCondition.value = it.copy(
+                sortCondition = sortCondition,
+                sortOrder = sortOrder
+            )
+        } ?: run {
+            _searchFilterPlusSortCondition.value =
+                RestaurantFilteringSortingCondition(
+                    sortCondition = sortCondition,
+                    sortOrder = sortOrder
+                )
         }
     }
 

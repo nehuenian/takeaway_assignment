@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.takeaway.assignment.R
 import com.takeaway.assignment.data.Restaurant
-import com.takeaway.assignment.data.RestaurantFilteringSortingCondition
 import com.takeaway.assignment.data.Result
 import com.takeaway.assignment.databinding.FragmentRestaurantsBinding
 import com.takeaway.assignment.ui.adapters.RestaurantsAdapter
@@ -39,18 +38,22 @@ class RestaurantsFragment : Fragment() {
 
         // First load using default values (no search filter and sorting by lowest distance first)
         viewModel.refreshRestaurants()
-        viewModel.setFilterAndSortCondition(RestaurantFilteringSortingCondition())
     }
 
     private fun setUpObservers() {
         viewModel.restaurantListState.observe(::getLifecycle, ::handleRestaurantsResult)
         viewModel.refreshResult.observe(::getLifecycle, ::handleRefreshResult)
         viewModel.updateFavouriteResult.observe(::getLifecycle, ::handleUpdateFavouriteResult)
+        viewModel.searchFilterPlusSortCondition.observe(::getLifecycle) { handleFilterAndSortConditionChange() }
+    }
+
+    private fun handleFilterAndSortConditionChange() {
+        viewBinding.restaurantList.adapter?.notifyDataSetChanged()
     }
 
     private fun handleUpdateFavouriteResult(result: Result<Nothing?>) {
         if (result is Result.Error) {
-            Toast.makeText(context, R.string.generic_error, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.update_favourite_error, Toast.LENGTH_SHORT).show()
         }
     }
 
