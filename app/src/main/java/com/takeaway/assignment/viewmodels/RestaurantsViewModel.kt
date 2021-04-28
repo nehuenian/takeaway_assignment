@@ -45,17 +45,15 @@ class RestaurantsViewModel @Inject constructor(
         }
     }
 
-    fun setSortCondition(sortCondition: SortCondition, sortOrder: SortOrder) {
+    fun setSortCondition(sortCondition: SortCondition) {
         _searchFilterPlusSortCondition.value?.let {
             _searchFilterPlusSortCondition.value = it.copy(
-                sortCondition = sortCondition,
-                sortOrder = sortOrder
+                sortCondition = sortCondition
             )
         } ?: run {
             _searchFilterPlusSortCondition.value =
                 RestaurantFilteringSortingCondition(
-                    sortCondition = sortCondition,
-                    sortOrder = sortOrder
+                    sortCondition = sortCondition
                 )
         }
     }

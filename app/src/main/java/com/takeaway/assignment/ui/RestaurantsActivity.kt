@@ -9,7 +9,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.takeaway.assignment.R
 import com.takeaway.assignment.data.SortCondition
-import com.takeaway.assignment.data.SortOrder
 import com.takeaway.assignment.databinding.ActivityRestaurantsBinding
 import com.takeaway.assignment.viewmodels.RestaurantsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,7 +36,9 @@ class RestaurantsActivity :
             SortCondition.values()
         ).apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
         viewBinding.sortConditionsSpinner.onItemSelectedListener = this
-        viewBinding.sortConditionsSpinner.setSelection(SortCondition.DISTANCE.ordinal)
+
+        // This is not strictly needed, but it's good to have an explicitly defined initial sorting value
+        viewBinding.sortConditionsSpinner.setSelection(SortCondition.BEST_MATCH.ordinal)
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -56,11 +57,11 @@ class RestaurantsActivity :
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         (parent?.getItemAtPosition(position) as? SortCondition)?.let { sortCondition ->
-            viewModel.setSortCondition(sortCondition, SortOrder.ASCENDING)
+            viewModel.setSortCondition(sortCondition)
         }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        viewModel.setSortCondition(SortCondition.DISTANCE, SortOrder.ASCENDING)
+        viewModel.setSortCondition(SortCondition.DISTANCE)
     }
 }

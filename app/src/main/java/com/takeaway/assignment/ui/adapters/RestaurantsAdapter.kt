@@ -10,6 +10,7 @@ import com.takeaway.assignment.R
 import com.takeaway.assignment.data.Restaurant
 import com.takeaway.assignment.data.Result
 import com.takeaway.assignment.data.SortCondition
+import com.takeaway.assignment.data.SortCondition.*
 import com.takeaway.assignment.data.SortingValues
 import com.takeaway.assignment.databinding.RestaurantItemBinding
 import com.takeaway.assignment.util.fromHtml
@@ -86,56 +87,55 @@ class RestaurantsAdapter(private val viewModel: RestaurantsViewModel) :
 
 private fun TextView.setSortingValue(sortCondition: SortCondition, sortingValues: SortingValues) {
     text = when (sortCondition) {
-        SortCondition.BEST_MATCH -> {
+        BEST_MATCH -> {
             context.getString(
                 R.string.sorting_value,
                 sortCondition.toString(),
                 sortingValues.bestMatch.toString()
             ).fromHtml()
         }
-        SortCondition.NEWEST -> {
+        NEWEST -> {
             context.getString(
                 R.string.sorting_value,
                 sortCondition.toString(),
                 sortingValues.newest.toString()
             ).fromHtml()
         }
-        SortCondition.RATING_AVERAGE -> {
+        RATING_AVERAGE -> {
             context.getString(
                 R.string.sorting_value,
                 sortCondition.toString(),
                 sortingValues.ratingAverage.toString()
             ).fromHtml()
         }
-        SortCondition.DISTANCE -> {
+        DISTANCE -> {
             context.getString(
                 R.string.sorting_value_distance,
                 sortCondition.toString(),
                 sortingValues.distance.toString()
             ).fromHtml()
         }
-        SortCondition.POPULARITY -> {
+        POPULARITY -> {
             context.getString(
                 R.string.sorting_value,
                 sortCondition.toString(),
                 sortingValues.popularity.toString()
             ).fromHtml()
         }
-        SortCondition.AVERAGE_PRODUCT_PRICE -> {
+        AVERAGE_PRODUCT_PRICE_LOWEST_FIRST, AVERAGE_PRODUCT_PRICE_HIGHEST_FIRST -> {
             context.getString(
-                R.string.sorting_value_money,
-                sortCondition.toString(),
+                R.string.sorting_value_average_product_price,
                 sortingValues.averageProductPrice.toString()
             ).fromHtml()
         }
-        SortCondition.DELIVERY_COSTS -> {
+        DELIVERY_COSTS -> {
             context.getString(
                 R.string.sorting_value_money,
                 sortCondition.toString(),
                 sortingValues.deliveryCosts.toString()
             ).fromHtml()
         }
-        SortCondition.MIN_COST -> {
+        MIN_COST -> {
             context.getString(
                 R.string.sorting_value_money,
                 sortCondition.toString(),

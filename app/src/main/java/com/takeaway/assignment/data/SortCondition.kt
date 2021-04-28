@@ -6,7 +6,8 @@ enum class SortCondition {
     RATING_AVERAGE,
     DISTANCE,
     POPULARITY,
-    AVERAGE_PRODUCT_PRICE,
+    AVERAGE_PRODUCT_PRICE_LOWEST_FIRST,
+    AVERAGE_PRODUCT_PRICE_HIGHEST_FIRST,
     DELIVERY_COSTS,
     MIN_COST;
 
@@ -17,13 +18,10 @@ enum class SortCondition {
             RATING_AVERAGE -> "Rating"
             DISTANCE -> "Distance"
             POPULARITY -> "Popularity"
-            AVERAGE_PRODUCT_PRICE -> "Average product price"
+            AVERAGE_PRODUCT_PRICE_LOWEST_FIRST -> "Average product price: lowest first"
+            AVERAGE_PRODUCT_PRICE_HIGHEST_FIRST -> "Average product price: highest first"
             DELIVERY_COSTS -> "Delivery cost"
             MIN_COST -> "Min cost"
         }
     }
-}
-
-enum class SortOrder {
-    ASCENDING, DESCENDING
 }
