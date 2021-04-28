@@ -1,7 +1,10 @@
 package com.takeaway.assignment.usecases
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.takeaway.assignment.data.*
+import com.takeaway.assignment.data.Restaurant
+import com.takeaway.assignment.data.RestaurantFilteringSortingCondition
+import com.takeaway.assignment.data.Result
+import com.takeaway.assignment.data.SortCondition
 import com.takeaway.assignment.data.sources.FakeRestaurantsRepository
 import com.takeaway.assignment.testutil.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,7 +38,7 @@ class ObserveRestaurantListUseCaseTest {
     }
 
     @Test
-    fun `Test load restaurant list without favourites and no sort options selected`() =
+    fun `Test load restaurant list without favourites and default sort options selected`() =
         runBlockingTest {
             // Given a repository with 3 restaurants not marked as favourites
             restaurantsRepository.restaurantsList = generateThreeRestaurantsWithNoFavourites()
@@ -55,7 +58,7 @@ class ObserveRestaurantListUseCaseTest {
         }
 
     @Test
-    fun `Test load restaurant list filtering by name with suffix and no sort condition selected`() =
+    fun `Test load restaurant list filtering by name with suffix and default sort condition selected`() =
         runBlockingTest {
             // Given a repository with 3 restaurants not marked as favourites one which does not include the suffix filtered by
             restaurantsRepository.restaurantsList = generateThreeRestaurantsWithNoFavourites()
@@ -76,7 +79,7 @@ class ObserveRestaurantListUseCaseTest {
         }
 
     @Test
-    fun `Test load restaurant list filtering by name with prefix and no sort condition selected`() =
+    fun `Test load restaurant list filtering by name with prefix and default sort condition selected`() =
         runBlockingTest {
             // Given a repository with 3 restaurants not marked as favourites one which will match the prefix filter
             restaurantsRepository.restaurantsList = generateThreeRestaurantsWithNoFavourites()
@@ -160,8 +163,7 @@ class ObserveRestaurantListUseCaseTest {
         // Given a repository with 4 restaurants, being the last one the one with best sorting value
         setUpInitialRestaurantsPlusRestaurantWithBestDescendingValues()
         val filteringSortingCondition = RestaurantFilteringSortingCondition(
-            sortCondition = SortCondition.BEST_MATCH,
-            sortOrder = SortOrder.DESCENDING
+            sortCondition = SortCondition.BEST_MATCH
         )
 
         // When calling the use case with no filtering and descending best match value sorting condition
@@ -173,29 +175,11 @@ class ObserveRestaurantListUseCaseTest {
     }
 
     @Test
-    fun `Test load restaurant list sorted by ascending newest value`() = runBlockingTest {
-        // Given a repository with 4 restaurants, being the last one the one with lowest newest value
-        setUpInitialRestaurantsPlusRestaurantWithBestAscendingValues()
-        val filteringSortingCondition = RestaurantFilteringSortingCondition(
-            sortCondition = SortCondition.NEWEST,
-            sortOrder = SortOrder.ASCENDING
-        )
-
-        // When calling the use case with no filtering and ascending newest value sorting condition
-        val result = observeRestaurantListUseCase(filteringSortingCondition).getOrAwaitValue()
-
-        // Then the result is success with the restaurant with the lowest newest value
-        // showing first, and the other restaurants in the list in the original order
-        assertCorrectOrderWithCustomSortingCondition(result)
-    }
-
-    @Test
     fun `Test load restaurant list sorted by descending newest value`() = runBlockingTest {
         // Given a repository with 4 restaurants, being the last one the one with highest newest value
         setUpInitialRestaurantsPlusRestaurantWithBestDescendingValues()
         val filteringSortingCondition = RestaurantFilteringSortingCondition(
-            sortCondition = SortCondition.NEWEST,
-            sortOrder = SortOrder.DESCENDING
+            sortCondition = SortCondition.NEWEST
         )
 
         // When calling the use case with no filtering and descending newest value sorting condition
@@ -211,8 +195,7 @@ class ObserveRestaurantListUseCaseTest {
         // Given a repository with 4 restaurants, being the last one the one with highest rating average
         setUpInitialRestaurantsPlusRestaurantWithBestDescendingValues()
         val filteringSortingCondition = RestaurantFilteringSortingCondition(
-            sortCondition = SortCondition.RATING_AVERAGE,
-            sortOrder = SortOrder.DESCENDING
+            sortCondition = SortCondition.RATING_AVERAGE
         )
 
         // When calling the use case with no filtering and descending rating average sorting condition
@@ -228,8 +211,7 @@ class ObserveRestaurantListUseCaseTest {
         // Given a repository with 4 restaurants, being the last one the one with the lowest distance
         setUpInitialRestaurantsPlusRestaurantWithBestAscendingValues()
         val filteringSortingCondition = RestaurantFilteringSortingCondition(
-            sortCondition = SortCondition.DISTANCE,
-            sortOrder = SortOrder.ASCENDING
+            sortCondition = SortCondition.DISTANCE
         )
 
         // When calling the use case with no filtering and ascending distance sorting condition
@@ -245,8 +227,7 @@ class ObserveRestaurantListUseCaseTest {
         // Given a repository with 4 restaurants, being the last one the one with highest popularity
         setUpInitialRestaurantsPlusRestaurantWithBestDescendingValues()
         val filteringSortingCondition = RestaurantFilteringSortingCondition(
-            sortCondition = SortCondition.POPULARITY,
-            sortOrder = SortOrder.DESCENDING
+            sortCondition = SortCondition.POPULARITY
         )
 
         // When calling the use case with no filtering and descending popularity sorting condition
@@ -262,8 +243,7 @@ class ObserveRestaurantListUseCaseTest {
         // Given a repository with 4 restaurants, being the last one the one with highest average price
         setUpInitialRestaurantsPlusRestaurantWithBestDescendingValues()
         val filteringSortingCondition = RestaurantFilteringSortingCondition(
-            sortCondition = SortCondition.AVERAGE_PRODUCT_PRICE,
-            sortOrder = SortOrder.DESCENDING
+            sortCondition = SortCondition.AVERAGE_PRODUCT_PRICE_HIGHEST_FIRST
         )
 
         // When calling the use case with no filtering and descending average price sorting condition
@@ -279,8 +259,7 @@ class ObserveRestaurantListUseCaseTest {
         // Given a repository with 4 restaurants, being the last one the one with lowest average price
         setUpInitialRestaurantsPlusRestaurantWithBestAscendingValues()
         val filteringSortingCondition = RestaurantFilteringSortingCondition(
-            sortCondition = SortCondition.AVERAGE_PRODUCT_PRICE,
-            sortOrder = SortOrder.ASCENDING
+            sortCondition = SortCondition.AVERAGE_PRODUCT_PRICE_LOWEST_FIRST
         )
 
         // When calling the use case with no filtering and ascending average price sorting condition
@@ -310,8 +289,7 @@ class ObserveRestaurantListUseCaseTest {
         // Given a repository with 4 restaurants, being the last one the one with lowest min cost
         setUpInitialRestaurantsPlusRestaurantWithBestAscendingValues()
         val filteringSortingCondition = RestaurantFilteringSortingCondition(
-            sortCondition = SortCondition.MIN_COST,
-            sortOrder = SortOrder.ASCENDING
+            sortCondition = SortCondition.MIN_COST
         )
 
         // When calling the use case with no filtering and ascending min cost sorting condition
@@ -330,8 +308,7 @@ class ObserveRestaurantListUseCaseTest {
             restaurantsRepository.restaurantsList = generateMixedRestaurantList()
             val filteringSortingCondition = RestaurantFilteringSortingCondition(
                 searchFilter = RESTAURANT_SUFFIX_FILTER,
-                sortCondition = SortCondition.DISTANCE,
-                sortOrder = SortOrder.ASCENDING
+                sortCondition = SortCondition.DISTANCE
             )
 
             // When calling the use case with suffix filtering, and custom sort condition

@@ -2,6 +2,5 @@ package com.takeaway.assignment.data
 
 data class RestaurantFilteringSortingCondition(
     var searchFilter: String = "",
-    var sortCondition: SortCondition = SortCondition.DISTANCE,
-    var sortOrder: SortOrder = SortOrder.ASCENDING,
+    var sortCondition: SortCondition = SortCondition.BEST_MATCH,
 )

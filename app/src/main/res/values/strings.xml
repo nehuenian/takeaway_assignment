@@ -7,15 +7,17 @@
     <!-- Generic error end -->
 
     <!-- Restaurant list start -->
-    <string name="sorting_value">%1$s: %2$s</string>
-    <string name="sorting_value_distance">%1$s: %2$s meters</string>
-    <string name="sorting_value_money">%1$s: %2$s USD</string>
+    <string name="sorting_value"><![CDATA[<b>%1$s:</b> %2$s]]></string>
+    <string name="sorting_value_distance"><![CDATA[<b>%1$s:</b> %2$s meters]]></string>
+    <string name="sorting_value_average_product_price"><![CDATA[<b>Average product price:</b> %1$s USD]]></string>
+    <string name="sorting_value_money"><![CDATA[<b>%1$s:</b> %2$s USD]]></string>
     <string name="placeholder_restaurant_name">Tandoori Express</string>
-    <string name="placeholder_sorting_value">Distance: 750 meters</string>
+    <string name="placeholder_sorting_value"><b>Distance:</b> 750 meters</string>
 
     <!-- Restaurants Fragment start -->
     <string name="no_restaurants_to_show">There are no restaurants matching your search</string>
     <string name="refresh_error">We were not able to update the restaurants in the list. Please try again later</string>
     <string name="update_favourite_error">Error marking/un-marking the restaurant as favourite</string>
+    <string name="sort_by">Sort by:</string>
 
 </resources>

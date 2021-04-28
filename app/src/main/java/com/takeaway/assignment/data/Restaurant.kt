@@ -39,10 +39,17 @@ data class Restaurant @JvmOverloads constructor(
         @SerializedName(StatusValues.OPEN)
         OPEN(2),
 
-        @SerializedName(StatusValues.CLOSED)
-        CLOSED(0),
-
         @SerializedName(StatusValues.ORDER_AHEAD)
-        ORDER_AHEAD(1)
+        ORDER_AHEAD(1),
+
+        @SerializedName(StatusValues.CLOSED)
+        CLOSED(0);
+
+        override fun toString(): String {
+            return when (this) {
+                ORDER_AHEAD -> "ORDER AHEAD"
+                else -> super.toString()
+            }
+        }
     }
 }
