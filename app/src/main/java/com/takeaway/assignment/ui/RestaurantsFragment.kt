@@ -35,9 +35,16 @@ class RestaurantsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpListAdapter()
         setUpObservers()
+        setUpGenericErrorLayout()
 
         // First load using default values (no search filter and sorting by lowest distance first)
         viewModel.refreshRestaurants()
+    }
+
+    private fun setUpGenericErrorLayout() {
+        viewBinding.genericError.genericErrorTryAgain.setOnClickListener {
+            viewModel.refreshRestaurants()
+        }
     }
 
     private fun setUpObservers() {

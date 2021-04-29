@@ -12,15 +12,19 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.takeaway.assignment.R
 import com.takeaway.assignment.data.SortCondition
+import com.takeaway.assignment.data.sources.RestaurantsRepository
+import com.takeaway.assignment.data.sources.TestRestaurantsRepository
 import com.takeaway.assignment.testutil.*
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
@@ -29,12 +33,17 @@ class RestaurantsActivityTest {
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
+    @Inject
+    lateinit var repository: RestaurantsRepository
+
     @IdRes
     private val favouriteCheckId = R.id.favourite_check
 
     private val recyclerViewMatcher = withId(R.id.restaurant_list)
     private val searchMatcher = withId(R.id.restaurant_search)
     private val spinnerMatcher = withId(R.id.sort_conditions_spinner)
+    private val genericErrorMatcher = withText(R.string.generic_error)
+    private val tryAgainButtonMatcher = withId(R.id.generic_error_try_again)
     private val bestMatchSortConditionMatcher = withText(SortCondition.BEST_MATCH.toString())
     private val newestSortConditionMatcher = withText(SortCondition.NEWEST.toString())
     private val ratingSortConditionMatcher = withText(SortCondition.RATING_AVERAGE.toString())
@@ -84,6 +93,39 @@ class RestaurantsActivityTest {
         Thread.sleep(1000)
 
         onView(noRestaurantsToShowMatcher).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun errorWhileLoadingRestaurantList() {
+        (repository as TestRestaurantsRepository).setReturnError(true)
+        val activityScenario = ActivityScenario.launch(RestaurantsActivity::class.java)
+
+        onView(genericErrorMatcher).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun errorWhileLoadingRestaurantListTryAgainToFix() {
+        (repository as TestRestaurantsRepository).setReturnError(true)
+        val activityScenario = ActivityScenario.launch(RestaurantsActivity::class.java)
+
+        onView(genericErrorMatcher).check(matches(isDisplayed()))
+
+        (repository as TestRestaurantsRepository).setReturnError(false)
+        onView(tryAgainButtonMatcher).check(matches(isDisplayed())).perform(click())
+
+        Thread.sleep(1000)
+
+        onView(genericErrorMatcher).check(matches(not(isDisplayed())))
+        recyclerViewMatcher.scrollToTheTop()
+
+        verifyRestaurantAtPosition(FIRST_POSITION, expectedRestaurantListSortedByBestMatch)
+        verifyRestaurantAtPosition(SECOND_POSITION, expectedRestaurantListSortedByBestMatch)
+        verifyRestaurantAtPosition(THIRD_POSITION, expectedRestaurantListSortedByBestMatch)
+        verifyRestaurantAtPosition(FOURTH_POSITION, expectedRestaurantListSortedByBestMatch)
 
         activityScenario.close()
     }
