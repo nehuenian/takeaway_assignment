@@ -23,6 +23,7 @@
         android:importantForAccessibility="no" />
 
     <Button
+        android:id="@+id/generic_error_try_again"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

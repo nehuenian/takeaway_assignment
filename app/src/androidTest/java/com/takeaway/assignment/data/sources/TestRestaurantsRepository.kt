@@ -28,6 +28,7 @@ class TestRestaurantsRepository @Inject constructor(context: Context) : Restaura
 
     override suspend fun refreshRestaurantList(): Result<Nothing?> {
         return if (_shouldReturnError || restaurantsList == null) {
+            _observableRestaurantList.value = Result.Error(java.lang.IllegalArgumentException())
             Result.Error(java.lang.IllegalArgumentException())
         } else {
             _observableRestaurantList.value = Result.Success(restaurantsList)
