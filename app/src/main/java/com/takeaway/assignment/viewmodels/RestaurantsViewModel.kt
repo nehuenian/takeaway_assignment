@@ -44,6 +44,11 @@ class RestaurantsViewModel @Inject constructor(
     private val _updateFavouriteResult = MutableLiveData<Result<Nothing?>>()
     val updateFavouriteResult: LiveData<Result<Nothing?>> = _updateFavouriteResult
 
+    init {
+        // First loading from remote
+        refreshRestaurants()
+    }
+
     /**
      * Set up the new text to be used to filter the restaurant list.
      *
