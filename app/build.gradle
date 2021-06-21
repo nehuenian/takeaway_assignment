@@ -80,13 +80,13 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hiltVersion"
     kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
     implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03'
-    kapt 'androidx.hilt:hilt-compiler:1.0.0-beta01'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
     // Hilt testing
     androidTestImplementation "com.google.dagger:hilt-android-testing:$hiltVersion"
     testImplementation "com.google.dagger:hilt-android-testing:$hiltVersion"
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hiltVersion"
-    kaptAndroidTest "androidx.hilt:hilt-compiler:1.0.0-beta01"
+    kaptAndroidTest "androidx.hilt:hilt-compiler:1.0.0"
 
     // Unit Testing
     testImplementation "junit:junit:$junitVersion"
@@ -101,11 +101,11 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-intents:$espressoVersion"
     androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:$espressoVersion"
 
-    // Detekt - Commented due to errors with embeddable during build. Uncomment to use
-/*    implementation("io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion") {
+    // Detekt
+    implementation("io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion") {
         exclude group: "com.pinterest.ktlint", module: "ktlint-core"
         exclude group: "com.pinterest.ktlint", module: "ktlint-ruleset-experimental"
         exclude group: "com.pinterest.ktlint", module: "ktlint-ruleset-standard"
     }
-    implementation "io.gitlab.arturbosch.detekt:detekt-cli:$detektVersion"*/
+    implementation "io.gitlab.arturbosch.detekt:detekt-cli:$detektVersion"
 }
