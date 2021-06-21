@@ -27,7 +27,3 @@ To run the unit tests, just go to any of the UseCaseTest classes (for example, t
 ## UI Testing
 
 The UI Automation test is running under Espresso, so you'll need to setup an emulator to run this block of testing. After that, you can just go to the RestaurantsActivityTest class within the androidTest location, and just hit the run button once more. Normally you would have UI tests for each fragment and one E2E automation test for the activity, to wrap up the whole flow, but due to the nature of this assignment, I thought a single UI test block for the whole activity had more sense.
-
-## Detekt causing problems
-
-I added detekt because I love the way it helps you to ensure the code quality, but at some point I started to have problems with it's dependencies when trying to run the project, so I ended up commenting all the implementation lines related to it, just to save me some time digging in the dark world of dependency conflicts (I wasn't totally free from that though). Anyway, if you want to run the detekt task, just uncomment the related dependencies and run it. Just make sure to re-comment the lines whenever you're ready to build the app again
